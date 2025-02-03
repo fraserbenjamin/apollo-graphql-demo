@@ -1,7 +1,18 @@
 type Query {
-  user: User
+  user(id: Int): User!
+  users: [User!]!
+  post(id: Int): Post!
+  posts: [Post!]!
 }
 
 type User {
-  username: String
+  id: Int!
+  name: String!
+  posts: [Post!]!
+}
+
+type Post {
+  id: Int!
+  message: String!
+  user: User!
 }

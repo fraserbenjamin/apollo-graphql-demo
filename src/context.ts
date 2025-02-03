@@ -1,10 +1,11 @@
 import type { StandaloneServerContextFunctionArgument } from "@apollo/server/standalone";
-import { User } from "./dataSources";
+import { UsersService, PostsService } from "./dataSources";
 import type { IncomingMessage, ServerResponse } from "http";
 
 export interface GraphQLContext {
   dataSources: {
-    user: User;
+    usersService: UsersService;
+    postsService: PostsService;
   };
   req: IncomingMessage,
   res: ServerResponse,
@@ -13,7 +14,8 @@ export interface GraphQLContext {
 export const createContext = async ({ req, res }: StandaloneServerContextFunctionArgument): Promise<GraphQLContext> => {
   return {
     dataSources: {
-      user: new User(),
+      usersService: new UsersService(),
+      postsService: new PostsService(),
     },
     req,
     res,

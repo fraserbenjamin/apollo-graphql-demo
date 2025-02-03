@@ -1,4 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { PostModel } from '../dataSources/Posts';
+import { UserModel } from '../dataSources/Users';
 import { GraphQLContext } from '../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -16,17 +18,40 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Post = {
+  readonly __typename?: 'Post';
+  readonly id: Scalars['Int']['output'];
+  readonly message: Scalars['String']['output'];
+  readonly user: User;
+};
+
 export type Query = {
-  __typename?: 'Query';
-  user?: Maybe<User>;
+  readonly __typename?: 'Query';
+  readonly post: Post;
+  readonly posts: ReadonlyArray<Post>;
+  readonly user: User;
+  readonly users: ReadonlyArray<User>;
+};
+
+
+export type QueryPostArgs = {
+  id: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryUserArgs = {
+  id: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type User = {
-  __typename?: 'User';
-  username?: Maybe<Scalars['String']['output']>;
+  readonly __typename?: 'User';
+  readonly id: Scalars['Int']['output'];
+  readonly name: Scalars['String']['output'];
+  readonly posts: ReadonlyArray<Post>;
 };
 
-
+export type WithIndex<TObject> = TObject & Record<string, any>;
+export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -96,32 +121,49 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
+export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Post: ResolverTypeWrapper<PostModel>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  User: ResolverTypeWrapper<User>;
-};
+  User: ResolverTypeWrapper<UserModel>;
+}>;
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
+export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
+  Int: Scalars['Int']['output'];
+  Post: PostModel;
   Query: {};
   String: Scalars['String']['output'];
-  User: User;
-};
+  User: UserModel;
+}>;
 
-export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-};
-
-export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+export type PostResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
+  id: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type Resolvers<ContextType = GraphQLContext> = {
-  Query?: QueryResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
-};
+export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  post: Resolver<ResolversTypes['Post'], ParentType, ContextType, QueryPostArgs>;
+  posts: Resolver<ReadonlyArray<ResolversTypes['Post']>, ParentType, ContextType>;
+  user: Resolver<ResolversTypes['User'], ParentType, ContextType, QueryUserArgs>;
+  users: Resolver<ReadonlyArray<ResolversTypes['User']>, ParentType, ContextType>;
+}>;
+
+export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
+  id: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  posts: Resolver<ReadonlyArray<ResolversTypes['Post']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
+  Post: PostResolvers<ContextType>;
+  Query: QueryResolvers<ContextType>;
+  User: UserResolvers<ContextType>;
+}>;
 
